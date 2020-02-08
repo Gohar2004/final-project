@@ -15,7 +15,7 @@ grassHashiv = 0;
 
 
 //! Creating MATRIX -- START
-function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, waterArr, fireArr) {
+function matrixGenerator(matrixSize, grass, grassEater, predator, water, waterdrinker) {
     for (let i = 0; i < matrixSize; i++) {
         matrix[i] = [];
         for (let o = 0; o < matrixSize; o++) {
@@ -32,28 +32,27 @@ function matrixGenerator(matrixSize, grass, grassEater, grassEaterEater, waterAr
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 2;
     }
-    for (let i = 0; i < grassEaterEater; i++) {
+    for (let i = 0; i < predator; i++) {
         let customX = Math.floor(random(matrixSize));
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 3;
     }
-    for (let i = 0; i < waterArr; i++) {
+    for (let i = 0; i < water; i++) {
         let customX = Math.floor(random(matrixSize));
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 4;
     }
-    for (let i = 0; i < fireArr; i++) {
+    for (let i = 0; i < waterdrinker; i++) {
         let customX = Math.floor(random(matrixSize));
         let customY = Math.floor(random(matrixSize));
         matrix[customY][customX] = 5;
     }
 }
-matrixGenerator(20, 1, 1);
-//! Creating MATRIX -- END
+matrixGenerator(20, 5, 2);
 
 
 
-//! SERVER STUFF  --  START
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -63,7 +62,7 @@ app.get('/', function (req, res) {
     res.redirect('./index.html');
 });
 server.listen(3000);
-//! SERVER STUFF END  --  END
+
 
 
 
@@ -93,8 +92,7 @@ function game() {
         for (var i in grassEaterArr) {
             grassEaterArr[i].eat();
         }
-    }
-
+    }    
     //! Object to send
     let sendData = {
         matrix: matrix,
@@ -102,9 +100,12 @@ function game() {
     }
 
     //! Send data over the socket to clients who listens "data"
-    io.emit("data", sendData);
+    io.sockets.emit("data", sendData);
 }
 
 
 
-setInterval(game, 1000)
+setInterval(game, 3000)
+// function getWeather() {
+
+// }
